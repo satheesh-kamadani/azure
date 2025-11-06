@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+      version = "4.51.0"
     }
   }
 }
@@ -14,7 +14,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "example" {
   name     = "example-resources1"
-  location = "EAST US"
+  location = "West US 2"
 }
 
 resource "azurerm_virtual_network" "example" {
@@ -32,10 +32,11 @@ resource "azurerm_subnet" "example" {
 }
 
 resource "azurerm_public_ip" "example" {
-  name                     = "example_pip"
+  name                = "acceptanceTestPublicIp1"
   resource_group_name = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  allocation_method        = "Dynamic"
+  location            = azurerm_resource_group.example.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "example" {
@@ -47,7 +48,6 @@ resource "azurerm_network_interface" "example" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.example.id
   }
 }
 
@@ -55,8 +55,10 @@ resource "azurerm_linux_virtual_machine" "example" {
   name                = "example-machine"
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
-  size                = "Standard_F2"
+  size                = "Standard_B1S"
   admin_username      = "adminuser"
+  zone                = "3"
+
   network_interface_ids = [
     azurerm_network_interface.example.id,
   ]
@@ -76,5 +78,9 @@ resource "azurerm_linux_virtual_machine" "example" {
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts"
     version   = "latest"
+  }
+
+  tags = { 
+    "foo" = "bar" 
   }
 }
