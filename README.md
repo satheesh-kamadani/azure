@@ -1,4 +1,4 @@
-# Azure Zero to Hero Course
+# Azure DevOps
 
 ## Day 1: Understanding Cloud Concepts, Vocabulary and Terminology
 - What is cloud ?
